@@ -1,0 +1,13 @@
+okaaaaay... so now I actually need to figure out how I'm gonna do this.
+
+options:
+socket.io and just push updates when something changes
+  -batches all active states as friendlyname:status pairs in json
+  and pushes when anyone hits a toggle route
+
+
+I guess the question I ought to be asking myself is: does this project
+have a need to be live or to maintain a consistent connection to
+the server. the answer, of course is no. This is going to be 
+1-2 people max ever, even a fairly aggressive heartbeat should be 
+more than enough to keep things synchronized.
