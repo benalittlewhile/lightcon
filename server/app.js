@@ -8,6 +8,12 @@ const localDevices = [];
 
 // setup for wemo-client
 wemo.discover((err, deviceinfo) => {
+  // initialize a client for the found device
+  let client = wemo.client(deviceinfo);
+
+  // add the client to the collection of clients
+  localDevices.push(client);
+
   console.log(
     `Wemo device found: ${deviceinfo.deviceType} named ${deviceinfo.friendlyName}`
   );
@@ -27,18 +33,13 @@ wemo.discover((err, deviceinfo) => {
     client.status = val;
     console.log(`${client.device.friendlyName} switched status to ${val}`);
   });
-
-  // initialize a client for the found device
-  let client = wemo.client(deviceinfo);
-
-  // add the client to the collection of clients
-  localDevices.push(client);
 });
 
 const app = express();
 const port = 3001;
 app.use(logger("dev"));
 
+// essential legacy code, do not remove
 app.get("/", (req, res) => {
   res.send("boop");
 });
@@ -71,35 +72,52 @@ app.get("/getAllStatuses", (req, res) => {
 app.post("/toggleSpecific", (req, res) => {
   let targetName = req.query.name;
   let targetDevice = undefined;
+
+  // check if a lightswitch exists with the provided name
   localDevices.forEach((dev) => {
     if (dev.device.friendlyName === targetName) {
       targetDevice = dev;
     }
   });
+
   try {
-    console.log(`manual state before is ${targetDevice.device.binaryState}`);
+    // attempt to get the current state of the device so we know what to toggle
+    // it to
     targetDevice.getBinaryState((err, val) => {
-      current = val;
       let newstate = undefined;
       if (err) {
         console.error(
           `error getting state, device name likely doesn't exist. ${err}`
         );
       }
+
+      // if we have no error and a defined value for the current status of the
+      // light then we have everything we need to try and toggle it
       if (!err && val != undefined) {
+        console.log(`manual state before is ${val}`);
+
+        // if the current state is 1 then our new state should be 0, otherwise
+        // it should be 1
         newstate = val == 1 ? 0 : 1;
+
         targetDevice.setBinaryState(newstate, (err) => {
+          // if there is an error setting a new status for the light then log
+          // it, otherwise log the change in the light's status
           err
             ? console.error(err)
             : console.log(`attempting to set ${targetName} to ${newstate}`);
         });
       }
     });
+
+    // if everything worked then send a success response
     res.sendStatus(200);
   } catch (err) {
     console.error(
       `error getting or setting binary state in togglespecific, device name likely doesn't exist. ${err}`
     );
+
+    // if there was an error send a failure response
     res.sendStatus(500);
   }
 });
