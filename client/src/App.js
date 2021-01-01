@@ -14,20 +14,28 @@ function App() {
   // I'm gonna need a better way to do this than localhost
   // at some point soon
   useEffect(() => {
-    //doafetchthing
-    fetch("http://localhost:3001/getAllStatuses").then((response) => {
-      setDevices(response);
-    });
+    async function fetchStatuses() {
+      //doafetchthing
+      await fetch("http://localhost:3001/getAllStatuses")
+        .then((res) => res.json())
+        .then((response) => {
+          console.log(JSON.stringify(response)[0]);
+          setDevices(response);
+        });
+    }
+    fetchStatuses();
   }, []);
 
   return (
     <div>
       <h1>it's a thing now, I said so</h1>
-      <div className="device">
-        {devices.map((device) => (
-          <div>{device.name}</div>
-        ))}
-      </div>
+      {
+        <div className="device">
+          {devices.map((device) => (
+            <div>{device.name}</div>
+          ))}
+        </div>
+      }
     </div>
   );
 }

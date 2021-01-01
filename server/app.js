@@ -71,9 +71,8 @@ app.get("/getAllStatuses", (req, res) => {
       status,
     });
   });
-  statbatch.push({ name: "juan", status: 0 });
-  console.log(statbatch);
-  res.json(JSON.stringify(statbatch));
+  console.log(statbatch[0]);
+  res.json(statbatch);
 });
 
 app.get("/getMockStatuses", (req, res) => {
