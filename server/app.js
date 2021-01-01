@@ -38,6 +38,8 @@ wemo.discover((err, deviceinfo) => {
 
 const app = express();
 const port = 3001;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
 app.use(
   cors({
@@ -62,7 +64,7 @@ app.listen(port, () => {
 // status: int (always 1 or 0)
 app.get("/getAllStatuses", (req, res) => {
   let statbatch = [];
-  console.log(`req: ${req.body}`);
+  // console.log(`req: ${req.body}`);
   localDevices.forEach((dev) => {
     let name = dev.device.friendlyName;
     let status = dev.status;
@@ -71,19 +73,16 @@ app.get("/getAllStatuses", (req, res) => {
       status,
     });
   });
-  console.log(statbatch[0]);
+  // console.log(statbatch);
   res.json(statbatch);
-});
-
-app.get("/getMockStatuses", (req, res) => {
-  let statback = [];
 });
 
 // route which toggles the status of a specific device on the network
 // accepts the following parameter, which must exactly match the known one:
 // name: string
 app.post("/toggleSpecific", (req, res) => {
-  let targetName = req.query.name;
+  console.log(req.body);
+  let targetName = req.body.name;
   let targetDevice = undefined;
 
   // check if a lightswitch exists with the provided name

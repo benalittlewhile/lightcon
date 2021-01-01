@@ -36,3 +36,52 @@
     transform: rotate(360deg);
   }
 }
+
+button.deviceToggle {
+  border: none;
+  width: 100%;
+  height: 20%;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+button.DeviceSwitchOn {
+  background-color: lightgreen;
+}
+
+button.DeviceSwitchOff {
+  background-color: lightcoral;
+}
+
+body {
+  background-color: #282c34;
+}
+
+.deviceList {
+  background-color: #282c34;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: baseline;
+  list-style-type: none;
+}
+
+.singleDevice {
+  position: relative;
+  width: 80%;
+  max-width: 200px;
+  margin-top: 2%;
+  margin-left: 2%;
+  height: 100%;
+  border-radius: 5px;
+  /* padding-left: 2%; */
+  /* padding-right: 2%; */
+  background-color: #414855;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.deviceWrapper {
+  width: 90%;
+}
