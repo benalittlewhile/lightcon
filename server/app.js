@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const logger = require("morgan");
 const Wemo = require("wemo-client");
 const wemo = new Wemo();
@@ -38,6 +39,12 @@ wemo.discover((err, deviceinfo) => {
 const app = express();
 const port = 3001;
 app.use(logger("dev"));
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 
 // essential legacy code, do not remove
 app.get("/", (req, res) => {
@@ -55,6 +62,7 @@ app.listen(port, () => {
 // status: int (always 1 or 0)
 app.get("/getAllStatuses", (req, res) => {
   let statbatch = [];
+  console.log(`req: ${req.body}`);
   localDevices.forEach((dev) => {
     let name = dev.device.friendlyName;
     let status = dev.status;
@@ -63,7 +71,13 @@ app.get("/getAllStatuses", (req, res) => {
       status,
     });
   });
-  res.json(statbatch);
+  statbatch.push({ name: "juan", status: 0 });
+  console.log(statbatch);
+  res.json(JSON.stringify(statbatch));
+});
+
+app.get("/getMockStatuses", (req, res) => {
+  let statback = [];
 });
 
 // route which toggles the status of a specific device on the network

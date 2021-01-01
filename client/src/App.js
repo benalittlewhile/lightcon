@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useState, useEffect } from "react";
 
 function App() {
+  const mockDeviceList = [
+    {
+      name: "",
+      status: "",
+    },
+  ];
+
+  let [devices, setDevices] = useState(mockDeviceList);
+
+  // I'm gonna need a better way to do this than localhost
+  // at some point soon
+  useEffect(() => {
+    //doafetchthing
+    fetch("http://localhost:3001/getAllStatuses").then((response) => {
+      setDevices(response);
+    });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>it's a thing now, I said so</h1>
+      <div className="device">
+        {devices.map((device) => (
+          <div>{device.name}</div>
+        ))}
+      </div>
     </div>
   );
 }
