@@ -12,36 +12,30 @@ function App() {
 
   let [deviceArray, setDevices] = useState(mockDeviceList);
 
-  function makeServerUrl() {
-    let base = window.location.href;
-    let origin = base.split(":3")[0];
-    let serverAddr = origin + ":3001/";
-    return serverAddr;
-  }
-
-  async function fetchStatuses() {
-    //doafetchthing
-    await fetch(makeServerUrl() + "getAllStatuses")
-      .then((res) => res.json())
-      .then((response) => {
-        setDevices(response);
-      });
+  function updateDevices() {
+    fetchStatuses().then((val) => setDevices(val));
   }
 
   useEffect(() => {
-    fetchStatuses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    updateDevices();
   }, []);
 
   // set up a 1 second heartbeat for fetchStatuses so that it doesn't get out
   // of sync
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchStatuses();
+      updateDevices();
     }, 200);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!deviceArray || deviceArray.length === 0 || deviceArray === undefined) {
+    return (
+      <div>
+        <h1>No devices found</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="deviceWrapper">
@@ -66,3 +60,18 @@ function App() {
 }
 
 export default App;
+
+function makeServerUrl() {
+  let base = window.location.href;
+  let origin = base.split(":3")[0];
+  let serverAddr = origin + ":3001/";
+  return serverAddr;
+}
+
+async function fetchStatuses() {
+  //doafetchthing
+  await fetch(makeServerUrl() + "getAllStatuses").then((res) => res.json());
+  // .then((response) => {
+  //   setDevices(response);
+  // });
+}
